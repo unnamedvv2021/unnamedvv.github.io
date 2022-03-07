@@ -78,6 +78,7 @@ function createOptionsInMenu(e, str){
     opt.textContent = str;
     let id = e.currentTarget.id;
     opt.setAttribute("onclick", `deleteItem(${id});`);
+    opt.style.border = "solid";
     return opt;
 }
 // select deletion
