@@ -1,16 +1,14 @@
 let cnt = 0;
-let x, y, offsetx, offsety;
+let x, y;
 function dragstart_handler(ev) {
-    let dragdiv = ev.currentTarget;
-    let id = dragdiv.id;
-    offsetx = ev.clientX - dragdiv.getBoundingClientRect().left;
-    offsety = ev.clientY - dragdiv.getBoundingClientRect().top;
+    let id = ev.currentTarget.id;
+    let dragdiv = document.getElementById(id);
+    console.log(typeof dragdiv);
     if(dragdiv.getAttribute("class") == "items"){
         dragdiv.style.opacity = 0.5;
     }
-    // update the dataTransfer
     ev.dataTransfer.setData("text", ev.currentTarget.id);
-    ev.dataTransfer.setDragImage(dragdiv, offsetx * 2, offsety * 2);
+    ev.dataTransfer.setDragImage(dragdiv,0,0);
     // Tell the browser both copy and move are possible
     ev.effectAllowed = "copyMove";
     
@@ -29,16 +27,15 @@ function drop_handler(ev) {
     if (dragDiv.getAttribute("class") == "sourceItems" && ev.target.id == "dest_copy") {
         var nodeCopy = dragDiv.cloneNode(true);
         nodeCopy.id = cnt;
-        nodeCopy.style.cssText = `position: absolute; left: ${x - offsetx}px; top: ${y - offsety}px;`;
+        nodeCopy.style.cssText = `position: fixed; left: ${x}px; top: ${y}px;`;
         nodeCopy.setAttribute("oncontextmenu", "rightClick(event);");
         nodeCopy.setAttribute("class", "items");
         ev.target.appendChild(nodeCopy);
         cnt++;
     }
-    // here is a bug, when the target location is outside of the "dest_copy" but still inside
-    // the current div (ev.target.id == id), it still works for the drag
+    // here is a bug, when the target location is outside of the "dest_copy" but still inside the current div (ev.target.id == id), it still works for the drag
     else if (dragDiv.getAttribute("class") == "items" && (ev.target.id == "dest_copy" || ev.target.id == id)) {
-       dragDiv.style.cssText = `position: absolute; left: ${x - offsetx}px; top: ${y - offsety}px;`;
+       dragDiv.style.cssText = `position: fixed; left: ${x}px; top: ${y}px;`;
     }
 }
 function dragend_handler(ev) {
